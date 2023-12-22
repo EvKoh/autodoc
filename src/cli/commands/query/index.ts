@@ -1,20 +1,17 @@
 import chalk from 'chalk';
 import inquirer from 'inquirer';
-import { marked } from 'marked';
-import TerminalRenderer from 'marked-terminal';
-import { OpenAIEmbeddings } from 'langchain/embeddings';
+import { marked, Renderer } from 'marked';
+import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import path from 'path';
 import { HNSWLib } from '../../../langchain/hnswlib.js';
 import { AutodocRepoConfig, AutodocUserConfig } from '../../../types.js';
 import { makeChain } from './createChatChain.js';
 import { stopSpinner, updateSpinnerText } from '../../spinner.js';
-
+import TerminalRenderer from 'marked-terminal';
+const renderer = new TerminalRenderer({});
 const chatHistory: [string, string][] = [];
 
-marked.setOptions({
-  // Define custom renderer
-  renderer: new TerminalRenderer(),
-});
+marked.setOptions({ renderer: renderer as unknown as Renderer<never> });
 
 const displayWelcomeMessage = (projectName: string) => {
   console.log(chalk.bold.blue(`Welcome to the ${projectName} chatbot.`));
@@ -28,11 +25,26 @@ const clearScreenAndMoveCursorToTop = () => {
 };
 
 export const query = async (
-  { name, repositoryUrl, output, contentType, chatPrompt, targetAudience}: AutodocRepoConfig,
+  {
+    name,
+    repositoryUrl,
+    output,
+    contentType,
+    chatPrompt,
+    targetAudience,
+  }: AutodocRepoConfig,
   { llms }: AutodocUserConfig,
 ) => {
   const data = path.join(output, 'docs', 'data/');
-  const vectorStore = await HNSWLib.load(data, new OpenAIEmbeddings());
+  const vectorStore = await HNSWLib.load(
+    data,
+    new OpenAIEmbeddings({
+      azureOpenAIApiKey: process.env.OPENAI_API_KEY,
+      azureOpenAIApiVersion: '2023-07-01-preview',
+      azureOpenAIApiInstanceName: 'test-openai-sandbox',
+      azureOpenAIApiDeploymentName: 'gpt-4-32k',
+    }),
+  );
   const chain = makeChain(
     name,
     repositoryUrl,

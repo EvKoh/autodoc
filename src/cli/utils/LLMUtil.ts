@@ -1,4 +1,4 @@
-import { OpenAIChat } from 'langchain/llms';
+import { OpenAIChat } from 'langchain/llms/openai';
 import { LLMModelDetails, LLMModels } from '../../types.js';
 
 export const models: Record<LLMModels, LLMModelDetails> = {

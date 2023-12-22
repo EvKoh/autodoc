@@ -1,8 +1,8 @@
-import { OpenAIEmbeddings } from 'langchain/embeddings';
+import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import * as fs from 'fs';
 import { Document } from 'langchain/document';
-import { BaseDocumentLoader } from 'langchain/document_loaders';
+import { BaseDocumentLoader } from 'langchain/document_loaders/base';
 import path from 'path';
 import { AutodocRepoConfig } from '../../../types.js';
 import { HNSWLib } from '../../../langchain/hnswlib.js';
@@ -59,7 +59,7 @@ class RepoLoader extends BaseDocumentLoader {
     return await processDirectory(this.filePath);
   }
 }
-
+// : https://test-openai-sandbox.openai.azure.com/openai/deployments/gpt-4-32k/chat/completions?api-version=2023-07-01-preview
 export const createVectorStore = async ({
   root,
   output,
@@ -72,7 +72,15 @@ export const createVectorStore = async ({
     chunkOverlap: 100,
   });
   const docs = await textSplitter.splitDocuments(rawDocs);
-  /* Create the vectorstore */
-  const vectorStore = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings());
+  /* Create the vectorstore, https://js.langchain.com/docs/integrations/text_embedding/azure_openai */
+  const vectorStore = await HNSWLib.fromDocuments(
+    docs,
+    new OpenAIEmbeddings({
+      azureOpenAIApiKey: process.env.OPENAI_API_KEY,
+      azureOpenAIApiVersion: '2023-07-01-preview',
+      azureOpenAIApiInstanceName: 'test-openai-sandbox',
+      azureOpenAIApiDeploymentName: 'gpt-4-32k',
+    }),
+  );
   await vectorStore.save(output);
 };

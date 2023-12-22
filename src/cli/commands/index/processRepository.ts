@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { Md5 } from 'ts-md5';
-import { OpenAIChat } from 'langchain/llms';
+import { OpenAIChat } from 'langchain/llms/openai';
 import { encoding_for_model } from '@dqbd/tiktoken';
 import { APIRateLimit } from '../../utils/APIRateLimit.js';
 import {

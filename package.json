@@ -36,7 +36,7 @@
     "hnswlib-node": "^1.4.2",
     "inquirer": "^9.1.5",
     "istextorbinary": "^6.0.0",
-    "langchain": "^0.0.39",
+    "langchain": "^0.0.211",
     "marked": "^4.3.0",
     "marked-terminal": "^5.1.1",
     "minimatch": "^7.4.3",
