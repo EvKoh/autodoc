@@ -1,5 +1,5 @@
 {
-  "name": "@context-labs/autodoc",
+  "name": "@evkoh/autodoc",
   "version": "0.0.9",
   "description": "autodoc",
   "type": "module",
@@ -23,7 +23,7 @@
     "trailingComma": "all",
     "singleQuote": true
   },
-  "repository": "https://github.com/context-labs",
+  "repository": "https://github.com/EvKoh",
   "author": "sam@usecontext.io",
   "license": "MIT",
   "dependencies": {
